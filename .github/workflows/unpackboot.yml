@@ -13,6 +13,7 @@ jobs:
       run: |
         wget -q https://raw.githubusercontent.com/DroidDumps/phoenix_firmware_dumper/main/utils/unpackboot.sh
         # wget ${LINK} >/dev/null
+        # bash wgetgdrive.sh ID file_name
         # bash unpackboot.sh *img unpacked
         git config --global user.email "raza231198@gmail.com"
         git config --global user.name "MD Raza"
