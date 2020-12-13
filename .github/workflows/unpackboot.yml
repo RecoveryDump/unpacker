@@ -14,7 +14,10 @@ jobs:
         wget -q https://raw.githubusercontent.com/DroidDumps/phoenix_firmware_dumper/main/utils/unpackboot.sh
         # wget ${LINK} >/dev/null
         # bash wgetgdrive.sh ID file_name
-        # bash unpackboot.sh *img unpacked
+        # export RECOVERYTAR=$(tar -tzf *.tgz | grep recovery.img) && tar -vxf *.tgz $RECOVERYTAR
+        # export RECOVERYZIP=$(zip -sf *zip | grep recovery.img) && unzip *.zip $RECOVERYZIP
+        # export RECOVERYIMAGE=$(find . -type f -name *img)
+        # bash unpackboot.sh $RECOVERYIMAGE unpacked
         git config --global user.email "raza231198@gmail.com"
         git config --global user.name "MD Raza"
         git add .
