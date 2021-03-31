@@ -1,0 +1,14 @@
+name: 'Recovery Boot IMG Unpacker' 
+author: 'raza231198' 
+description: 'Universal Recovery Boot IMG Unpacker'
+
+runs:
+  using: "composite"
+  steps:
+    - run: ${GITHUB_ACTION_PATH}/unpack.sh
+      name: 'Recovery Boot IMG Unpacker'
+      shell: bash
+
+branding:
+  icon: 'box'
+  color: 'black'
