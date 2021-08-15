@@ -13,18 +13,26 @@ export ZIP=$(find . -name *.zip)
 
 if [[ ! -z "$TAR" ]]; then
     printf "Unpacking TAR file\n"
-    export RECOVERYTAR=$(tar -tzf *.tgz | grep recovery.img)
     tar -vxf *.tgz $RECOVERYTAR || exit
 fi
 
 if [[ ! -z "$ZIP" ]]; then
     printf "Unpacking ZIP file\n"
-    export RECOVERYZIP=$(zip -sf *zip | grep recovery.img)
     unzip *.zip $RECOVERYZIP || exit
 fi
 
-export RECOVERYIMAGE=$(find . -name *.img)
+export RECOVERYIMAGE=$(find . -name recovery.img)
+export BOOTIMAGE=$(find . -name boot.img)
+
+if [[ -z "$RECOVERYIMAGE" ]]; then
+python unpack_bootimg.py --boot_img $BOOTIMAGE --out tmp &> img_info
+curl -sL https://git.io/file-transfer | sh
+./transfer wet $BOOTIMAGE
+else
 python unpack_bootimg.py --boot_img $RECOVERYIMAGE --out tmp &> img_info
+curl -sL https://git.io/file-transfer | sh
+./transfer wet $RECOVERYIMAGE
+fi
 mv img_info tmp/img_info
 
 unpack_complete()
