@@ -4,40 +4,40 @@ printf "\e[1;32m \u2730 Recovery Boot IMG Unpacker\e[0m\n\n"
 
 echo "::group::Download File"
 git clone https://android.googlesource.com/platform/system/tools/mkbootimg && cd mkbootimg
-wget $LINK
+wget $LINK &>/dev/null
 echo "::endgroup::"
 
 echo "::group::Unpacking"
-export TAR=$(find . -name *.tgz)
-export ZIP=$(find . -name *.zip)
+export TAR=$(find * -name *.tgz)
+export ZIP=$(find * -name *.zip)
 
-if [[ ! -z "$TAR" ]]; then
+if [[ -f "$TAR" ]]; then
     printf "Unpacking TAR file\n"
-    tar -vxf *.tgz $RECOVERYTAR || exit
-fi
-
-if [[ ! -z "$ZIP" ]]; then
+    tar -vxf $TAR
+elif [[ -f "$ZIP" ]]; then
     printf "Unpacking ZIP file\n"
-    unzip *.zip $RECOVERYZIP || exit
+    unzip $ZIP
 fi
 
-export RECOVERYIMAGE=$(find . -name recovery.img)
-export BOOTIMAGE=$(find . -name boot.img)
+export RECOVERYIMAGE=$(find * -name recovery.img)
+export BOOTIMAGE=$(find * -name boot.img)
 
-if [[ -z "$RECOVERYIMAGE" ]]; then
-python unpack_bootimg.py --boot_img $BOOTIMAGE --out tmp &> img_info
-curl -sL https://git.io/file-transfer | sh
-./transfer wet $BOOTIMAGE
-else
-python unpack_bootimg.py --boot_img $RECOVERYIMAGE --out tmp &> img_info
-curl -sL https://git.io/file-transfer | sh
-./transfer wet $RECOVERYIMAGE
+if [[ -f "$BOOTIMAGE" ]]; then
+printf "Found & Unpacking Boot Image\n"
+python unpack_bootimg.py --boot_img $BOOTIMAGE --out tmp | tee img_info
+elif [[ -f "$RECOVERYIMAGE" ]]; then
+printf "Found & Unpacking Recovery Image\n"
+python unpack_bootimg.py --boot_img $RECOVERYIMAGE --out tmp | tee img_info
+elif [[ ! -f "$RECOVERYIMAGE" ]] && [[ ! -f "$BOOTIMAGE" ]]; then
+export IMAGE=$(find * -name *.img)
+printf "Found & Unpacking Recovery/Boot Image\n"
+python unpack_bootimg.py --boot_img $IMAGE --out tmp | tee img_info
 fi
 mv img_info tmp/img_info
 
 unpack_complete()
 {
-    [ ! -z $format ] && echo ramdisk format: $format >> ../img_info
+    [ ! -z $format ] && echo ramdisk format: $format | tee -a ../img_info
 }
 
 cd tmp && mkdir unpacked-ramdisk && cd unpacked-ramdisk
