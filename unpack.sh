@@ -76,7 +76,7 @@ echo "::group::Push To Github"
 cd ..
 git init
 git remote add origin https://$GITHUB_ACTOR:$GH_TOKEN@github.com/${GITHUB_REPOSITORY}
-git config --global user.email "raza231198@gmail.com"
+git config --global user.email "delightreza@gmail.com"
 git config --global user.name "MD Raza"
 git add .
 git commit -m "unpacked $VERSION" &>/dev/null
